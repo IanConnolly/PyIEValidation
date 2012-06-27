@@ -45,14 +45,12 @@ def validate_iban(in_iban):
         return False
 
 def get_mod97_10(in_iban):
-    
-    x = 1
+   
     checksum = int(in_iban[0])
-    while x < len(in_iban):
+    for char in in_iban[1:]
         checksum = checksum * 10
-        checksum = checksum + int(in_iban[x])
+        checksum = checksum + int(char)
         checksum = checksum % 97
-        x = x + 1
     return checksum
 
 
