@@ -18,34 +18,41 @@ import string
 def validate_bank_acc(in_accno):
     """ Validates Bank Account No. format """
     
-    if re.match("\d{8}", in_accno) is not None:
+    if re.match("\d{8}", in_accno) is not None: # check if 8 digits
         return True
     else:
         return False
 
 def validate_iban(in_iban):
 
-    """ Validates IBAN numbers for Irish bank accounts """
-    check_iban_less_bank = in_iban[8:] + "181400"
-    bank = in_iban[4:8]
-    bank_num = ""
-    for char in bank:
-        bank_num = bank_num + str(int(string.uppercase.index(char))+10)
-    check_iban = bank_num + check_iban_less_bank 
     
-    checksum = 98 - get_mod97_10(check_iban)
-    if checksum < 10:
+    """ Validates IBAN numbers for Irish bank accounts """
+    if re.match("[A-Z]{2}\d{2}[A-Z]{4}\d{14}", in_iban.upper()) is None: # check format (low hanging fruit)
+        return False
+    
+
+    check_iban_less_bank = in_iban[8:] + "181400" # 181400 = conversion of "IE00"
+    bank = in_iban[4:8] 
+    bank_num = ""
+    for char in bank: 
+        bank_num = bank_num + str(int(string.uppercase.index(char))+10) # convert letters to nums using conversion scheme
+    check_iban = bank_num + check_iban_less_bank  # put string back together
+    
+    checksum = 98 - get_mod97_10(check_iban) # get checksum
+    if checksum < 10: # add leading 0 if necessary
         checksum = "0" + str(checksum)
     else:
         checksum = str(checksum)
 
-    if checksum == in_iban[2:4]:
+    if checksum == in_iban[2:4]: # check the checksum
         return True
     else:
         return False
 
 def get_mod97_10(in_iban):
    
+    """ Get mod97-10 of the IBAN   """
+
     checksum = int(in_iban[0])
     for char in in_iban[1:]:
         checksum = checksum * 10
@@ -59,7 +66,7 @@ def validate_ppsn(in_ppsn):
     """ Validates Irish Personal Public Service Number or PPSN (Irish equivelant of Social Security no.)"""
     
     check = in_ppsn[-1]
-    i = 8; sum = 0
+    i = 8; sum = 0 # checking involves getting the sum of the result of multiplying each digit by appropriate num from  2-8
     
     for char in in_ppsn[:-1]:
         sum = sum +  int(char)*i
