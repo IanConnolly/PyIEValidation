@@ -1,7 +1,7 @@
 # vim: set expandtab, tb=4, shiftwidth=4
 
 """
-Collection of functions for validating Irish (Republic of Ireland) bank account numbers, PPSN, phone numbers, post codes etc.
+Collection of functions for validating Irish (Republic of Ireland) bank account numbers, PPSN, phone numbers etc.
 
 Original idea and phone & post code regex taken from PHP lib "Validate_IE" by Ken Guest (ken@linux.ie) and David Coallier (davidc@php.net)
 Link = http://pear.php.net/package/Validate_IE/docs/latest/Validate_IE/Validate_IE.html
@@ -81,11 +81,25 @@ def validate_ppsn(in_ppsn):
 
 #def validate_phone():
 
-#def validate_post_code():
 
-#def validate_passport():
 
-#def validate_drivers_license():
+def validate_passport(in_pp):
+
+    """ Validates Irish passport nums """
+
+    if re.match("[A-Z]{2}\d{7}", in_pp.upper()) is not None:
+        return True
+    else:
+        return False
+
+def validate_drivers_license(in_dln):
+
+    """ Validates Irish driver's licenses """
+
+    if re.match("\d{9}", in_dln.replace("-", "").replace(" ", "")) is not None: # 9 digits, no delimiters.
+        return True
+    else:
+        return False
 
 #def validate_license_plate():
 
