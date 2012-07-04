@@ -3,7 +3,7 @@
 """
 Collection of functions for validating Irish (Republic of Ireland) bank account numbers, PPSN, phone numbers etc.
 
-Original idea and phone & post code regex taken from PHP lib "Validate_IE" by Ken Guest (ken@linux.ie) and David Coallier (davidc@php.net)
+Original idea from PHP lib "Validate_IE" by Ken Guest (ken@linux.ie) and David Coallier (davidc@php.net)
 Link = http://pear.php.net/package/Validate_IE/docs/latest/Validate_IE/Validate_IE.html
 
 @author = Ian Connolly
@@ -65,22 +65,7 @@ def validate_ppsn(in_ppsn):
     
     """ Validates Irish Personal Public Service Number or PPSN (Irish equivelant of Social Security no.)"""
     
-    check = in_ppsn[-1]
-    i = 8; sum = 0 # checking involves getting the sum of the result of multiplying each digit by appropriate num from  2-8
-    
-    for char in in_ppsn[:-1]:
-        sum = sum +  int(char)*i
-        i = i - 1
-    
-    mod =  sum % 23
-    
-    if string.lowercase[mod-1] == check.lower():
-        return True
-    else:
-        return False
-
-#def validate_phone():
-
+    return check_MOD23(in_ppsn)
 
 
 def validate_passport(in_pp):
@@ -101,9 +86,31 @@ def validate_drivers_license(in_dln):
     else:
         return False
 
-#def validate_license_plate():
+def validate_vat_number(in_vat):
 
-#def validate_vat_number():
+    if re.match('IE\d{7}[a-z]', in_vat):
+        return  check_MOD23(in_vat[2:])
+
+    elif re.match('IE\d[a-z]\d{5}[a-z]', in_vat):
+        d   = in_vat[2:]
+        new = "0" +  d[2:7] + d[0] + d[7]
+        return check_MOD23(new)
+    else:
+        return False
+
+
+def check_MOD23(in_mod):
+    i = 8; sum = 0 # checking involves getting the sum of the result of multiplying each digit by appropriate num from  2-8
+    
+    for char in in_mod[:-1]:
+        sum = sum +  int(char)*i
+        i = i - 1
+    
+    mod =  sum % 23
+    if string.lowercase[mod-1] == in_mod[:-1].lower():
+        return True
+    else:
+        return False
 
 def validate_cao_number(in_num):
 
